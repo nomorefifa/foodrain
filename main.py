@@ -7,8 +7,6 @@ from Score import Score
 from Joystick import Joystick
 import time
 
-#testgit
-
 def main():
     # 조이스틱 초기화
     joystick = Joystick()
@@ -17,6 +15,8 @@ def main():
     
     # 게임 객체 초기화
     character = Character(joystick.width, joystick.height)
+    # 원하는 증가율 크기로 변경 가능
+    character.size_increment = 0.3  # 30% 증가
     score = Score()
     items = [Item(joystick.width, joystick.height) for _ in range(3)]  # 3개의 아이템 동시 생성
     
@@ -41,6 +41,23 @@ def main():
     garbagebags = []
     
     game_time = 0
+
+    # 이미지 크기를 저장할 딕셔너리
+    character_images = {
+        1: {'init': init_character,
+            'walk': walk_images,
+            'run': run_images}
+    }
+
+    max_level = 4  # 최대 레벨 설정
+    # 각 레벨별 이미지 크기 미리 생성
+    for level in range(2, max_level + 1):  # 최대 4배까지 준비
+        size = int(60 * (1 + (level - 1) * character.size_increment))  # 30%씩 증가
+        character_images[level] = {
+            'init': init_character.resize((size, size)),
+            'walk': [img.resize((size, size)) for img in walk_images],
+            'run': [img.resize((size, size)) for img in run_images]
+        }    
     
     while not score.game_over():
         # 배경 초기화 (흰색)
@@ -54,7 +71,7 @@ def main():
 
         # B 버튼으로 쓰레기 봉투 발사
         if not joystick.button_B.value:
-            garbagebag = Garbagebag(character.position)
+            garbagebag = Garbagebag(character.position, character.current_size)  # current_size 전달
             garbagebags.append(garbagebag)
 
         # 쓰레기 봉투 이동 및 충돌 체크
@@ -89,7 +106,8 @@ def main():
                     if item.item_type == 5:  # 쓰레기
                         score.lose_life()
                     else:  # 음식
-                        score.add_score()
+                        if score.add_score():
+                            character.resize(score.get_size_level())
                     item.reset()
                 # 바닥 충돌 체크
                 elif item.check_bottom(joystick.height):
@@ -101,15 +119,16 @@ def main():
                 item.reset()
         
         # 캐릭터 그리기 부분 수정
+        current_level = score.get_size_level()
         if not character.is_moving:  # 움직이지 않을 때
-            char_img = init_character
-            if character.direction == "left":  # 방향에 따라 이미지 뒤집기
+            char_img = character_images[current_level]['init']
+            if character.direction == "left":
                 char_img = char_img.transpose(Image.FLIP_LEFT_RIGHT)
         else:  # 움직일 때
             if character.is_running:
-                char_img = run_images[character.run_state]
+                char_img = character_images[current_level]['run'][character.run_state]
             else:
-                char_img = walk_images[character.walk_state]
+                char_img = character_images[current_level]['walk'][character.walk_state]
                 
             if character.direction == "left":
                 char_img = char_img.transpose(Image.FLIP_LEFT_RIGHT)
