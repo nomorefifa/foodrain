@@ -7,6 +7,8 @@ from Score import Score
 from Joystick import Joystick
 import time
 
+#testgit
+
 def main():
     # 조이스틱 초기화
     joystick = Joystick()
