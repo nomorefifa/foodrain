@@ -5,17 +5,26 @@ from Garbagebag import Garbagebag
 from Item import Item
 from Score import Score
 from Joystick import Joystick
+from ScreenManager import ScreenManager
 import time
 
 def main():
     # 조이스틱 초기화
     joystick = Joystick()
+    screen_manager = ScreenManager(joystick)
     my_image = Image.new("RGB", (joystick.width, joystick.height))
     my_draw = ImageDraw.Draw(my_image)
 
     # 배경 이미지 로드
     background = Image.open('image/background_city.jpg').convert('RGB')
     background = background.resize((joystick.width, joystick.height))
+
+    # 게임 종료 이미지 로드
+    ending_image = Image.open('image/background_movie.jpg').convert('RGB')
+    ending_image = ending_image.resize((joystick.width, joystick.height))
+
+    # 시작 화면 표시
+    screen_manager.show_start_screen(background)
     
     # 게임 객체 초기화
     character = Character(joystick.width, joystick.height)
@@ -67,15 +76,25 @@ def main():
         # 배경 초기화 (흰색)
         my_image.paste(background, (0, 0))
         
-        # 조이스틱 입력 처리
+        # 조이스틱 입력 처리 부분 수정
         command = {
             'left_pressed': not joystick.button_L.value,
             'right_pressed': not joystick.button_R.value,
+            'up_pressed': not joystick.button_U.value,
         }
 
-        # B 버튼으로 쓰레기 봉투 발사
+        # B 버튼으로 쓰레기 봉투 발사 부분 수정
         if not joystick.button_B.value:
-            garbagebag = Garbagebag(character.position, character.current_size)  # current_size 전달
+            # 발사 방향 결정
+            throw_direction = "up"  # 기본 방향은 수직으로
+            
+            # 대각선 방향 체크
+            if not joystick.button_L.value and not joystick.button_U.value:
+                throw_direction = "up_left"
+            elif not joystick.button_R.value and not joystick.button_U.value:
+                throw_direction = "up_right"
+
+            garbagebag = Garbagebag(character.position, character.current_size, throw_direction)
             garbagebags.append(garbagebag)
 
         # 쓰레기 봉투 이동 및 충돌 체크
@@ -168,12 +187,8 @@ def main():
         # 게임 루프의 대기 시간을 줄임 (0.03초에서 0.02초로)
         time.sleep(0.03)  # 게임 속도 증가
     
-    # 게임 오버 화면
-    my_draw.rectangle((0, 0, joystick.width, joystick.height), fill=(0, 0, 0))
-    my_draw.text((joystick.width//2 - 40, joystick.height//2 - 20), 
-                 f'Game Over!\nScore: {score.get_score()}', 
-                 fill=(255, 255, 255))
-    joystick.disp.image(my_image)
+    # 게임 종료 화면 표시
+    screen_manager.show_ending_screen(ending_image, score.get_score())
     time.sleep(3)
 
 if __name__ == '__main__':
