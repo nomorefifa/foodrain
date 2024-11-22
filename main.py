@@ -12,6 +12,10 @@ def main():
     joystick = Joystick()
     my_image = Image.new("RGB", (joystick.width, joystick.height))
     my_draw = ImageDraw.Draw(my_image)
+
+    # 배경 이미지 로드
+    background = Image.open('image/background_city.jpg').convert('RGB')
+    background = background.resize((joystick.width, joystick.height))
     
     # 게임 객체 초기화
     character = Character(joystick.width, joystick.height)
@@ -61,7 +65,7 @@ def main():
     
     while not score.game_over():
         # 배경 초기화 (흰색)
-        my_draw.rectangle((0, 0, joystick.width, joystick.height), fill=(255, 255, 255))
+        my_image.paste(background, (0, 0))
         
         # 조이스틱 입력 처리
         command = {
