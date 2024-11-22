@@ -4,7 +4,7 @@ class Score:
         self.score = 0
         self.life = 3
         self.size_level = 1  # 크기 레벨 추가
-        self.max_level = 4  # 최대 레벨 설정
+        self.max_level = 5  # 최대 레벨 설정
         
     def add_score(self):
         self.score += 1

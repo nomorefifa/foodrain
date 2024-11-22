@@ -20,9 +20,9 @@ def main():
     # 게임 객체 초기화
     character = Character(joystick.width, joystick.height)
     # 원하는 증가율 크기로 변경 가능
-    character.size_increment = 0.3  # 30% 증가
+    character.size_increment = 0.1  # 20% 증가
     score = Score()
-    items = [Item(joystick.width, joystick.height) for _ in range(3)]  # 3개의 아이템 동시 생성
+    items = [Item(joystick.width, joystick.height) for _ in range(8)]  # 5개의 아이템 동시 생성
     
     # 이미지 로드
     # main.py의 이미지 로드 부분 수정 60x60 으로 설정
@@ -53,7 +53,7 @@ def main():
             'run': run_images}
     }
 
-    max_level = 4  # 최대 레벨 설정
+    max_level = 5  # 최대 레벨 설정
     # 각 레벨별 이미지 크기 미리 생성
     for level in range(2, max_level + 1):  # 최대 4배까지 준비
         size = int(60 * (1 + (level - 1) * character.size_increment))  # 30%씩 증가
@@ -165,7 +165,8 @@ def main():
         joystick.disp.image(my_image)
         
         game_time += 1
-        time.sleep(0.03)
+        # 게임 루프의 대기 시간을 줄임 (0.03초에서 0.02초로)
+        time.sleep(0.03)  # 게임 속도 증가
     
     # 게임 오버 화면
     my_draw.rectangle((0, 0, joystick.width, joystick.height), fill=(0, 0, 0))
