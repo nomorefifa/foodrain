@@ -50,6 +50,9 @@ def main():
     # 이미지 로드 부분에 쓰레기 봉투 이미지 추가
     garbagebag_image = Image.open('image/garbagebag.png').convert('RGBA').resize((20, 20))
 
+    # 이미지 로드 부분에 알약 이미지 추가
+    pill_image = Image.open('image/pill.png').convert('RGBA').resize((20, 20))
+
     # 쓰레기 봉투 리스트 추가
     garbagebags = []
     
@@ -124,10 +127,12 @@ def main():
         for item in items:
             if item.state == 'active':
                 item.fall()
-                # 캐릭터와 충돌
+                # 캐릭터와 아이템이 충돌했을때
                 if item.check_collision(character.position):
                     if item.item_type == 5:  # 쓰레기
                         score.lose_life()
+                    elif item.item_type == 6:  # 알약
+                        score.add_life()  # 생명력 증가
                     else:  # 음식
                         if score.add_score():
                             character.resize(score.get_size_level())
@@ -159,10 +164,12 @@ def main():
         # 아이템 그리기(음식: 0 ~ 4 및 음식물 쓰레기: 5)
         for item in items:
             if item.state == 'active':  # 활성화된 아이템만 그리기
-                if item.item_type == 5:
+                if item.item_type == 5: # 쓰레기
                     item_img = trash_image
+                elif item.item_type == 6:  # 알약
+                    item_img = pill_image
                 else:
-                    item_img = food_images[item.item_type]
+                    item_img = food_images[item.item_type] # 음식들
                 my_image.paste(item_img, 
                              (int(item.position[0]), int(item.position[1])), 
                              item_img)

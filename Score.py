@@ -3,6 +3,7 @@ class Score:
     def __init__(self):
         self.score = 0
         self.life = 3
+        self.max_life = 3  # 최대 생명력 설정
         self.size_level = 1  # 크기 레벨 추가
         self.max_level = 5  # 최대 레벨 설정
         
@@ -20,6 +21,12 @@ class Score:
         
     def lose_life(self):
         self.life -= 1
+
+    def add_life(self):
+        if self.life < self.max_life:  # 최대 생명력을 초과하지 않도록
+            self.life += 1
+            return True
+        return False
         
     def game_over(self):
         return self.life <= 0

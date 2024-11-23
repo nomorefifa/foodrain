@@ -8,7 +8,7 @@ class Item:
         self.height = height
         self.base_fall_speed = 3
         self.position = np.array([0, 0, 0, 0])
-        self.item_type = 0
+        self.item_type = 0 # 0-4: 음식, 5: 쓰레기, 6: 알약
         self.state = 'active'
         self.reset()
         
@@ -26,12 +26,16 @@ class Item:
             y_start + 20  # y2 (높이 20)
         ])
 
-        # 0-4: 음식, 5: 쓰레기
-        # 쓰레기가 나올 확률을 높임 (약 30% 확률)
-        if random.random() < 0.3:  # 30%의 확률로 쓰레기 생성
+        # 0-4: 음식, 5: 쓰레기, 6: 알약
+        # 아이템 타입 결정
+        rand_val = random.random()
+        if rand_val < 0.3:  # 30%의 확률로 쓰레기 생성
             self.item_type = 5  # 쓰레기
-        else:  # 70%의 확률로 음식 생성
+        elif rand_val < 0.35:  # 5%의 확률로 알약 생성 (0.30 ~ 0.35)
+            self.item_type = 6  # 알약
+        else:  # 65%의 확률로 음식 생성
             self.item_type = random.randint(0, 4)  # 음식 아이템
+
         self.state = 'active'
         # 각 아이템마다 약간 다른 낙하 속도 설정
         self.fall_speed = self.base_fall_speed + random.uniform(0.1, 2.0)
