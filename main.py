@@ -32,8 +32,7 @@ def main():
     
     # 게임 객체 초기화
     character = Character(joystick.width, joystick.height)
-    # 원하는 증가율 크기로 변경 가능
-    character.size_increment = 0.2
+
     score = Score()
     items = [Item(joystick.width, joystick.height) for _ in range(8)]
     # item_size 가져오기
@@ -71,10 +70,9 @@ def main():
             'run': run_images}
     }
 
-    max_level = 5  # 최대 레벨 설정
     # 각 레벨별 이미지 크기 미리 생성
-    for level in range(2, max_level + 1):  # 최대 4배까지 준비
-        size = int(60 * (1 + (level - 1) * character.size_increment))  # 30%씩 증가
+    for level in range(2, character.max_level + 1):
+        size = int(60 * (1 + (level - 1) * character.size_increment))
         character_images[level] = {
             'init': init_character.resize((size, size)),
             'walk': [img.resize((size, size)) for img in walk_images],
@@ -82,7 +80,7 @@ def main():
         }    
     
     while not score.game_over():
-        
+
         my_image.paste(background, (0, 0))
         
         # 조이스틱 입력 처리 부분 수정

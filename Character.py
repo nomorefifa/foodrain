@@ -8,13 +8,14 @@ class Character:
         self.height = height
         self.base_size = 60  # 기본 크기 설정
         self.current_size = self.base_size  # 현재 크기
-        self.size_increment = 0.1  # 크기 증가율 조절
+        self.size_increment = 0.2  # 크기 증가율 조절
         self.max_level = 5  # 커질 수 있는 최대 레벨 설정
         self.position = np.array([width/2 - 30, height - 70, width/2 + 30, height - 10])
-        self.walk_state = 0
-        self.run_state = 0
         self.walk_speed = 5
         self.run_speed = 10
+
+        self.walk_state = 0
+        self.run_state = 0
         self.direction = "right"
         self.is_running = False
         self.animation_speed = 0
