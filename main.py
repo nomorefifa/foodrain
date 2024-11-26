@@ -58,6 +58,17 @@ def main():
     # 이미지 로드 부분에 알약 이미지 추가
     pill_image = Image.open('image/pill.png').convert('RGBA').resize((item_size, item_size))
 
+    # 하트 이미지 로드
+    life_3 = Image.open('image/life_3.png').convert('RGBA')
+    life_2 = Image.open('image/life_2.png').convert('RGBA')
+    life_1 = Image.open('image/life_1.png').convert('RGBA')
+
+    # 하트 이미지 크기 조정
+    heart_size = 15
+    life_3 = life_3.resize((heart_size * 3, heart_size))
+    life_2 = life_2.resize((heart_size * 3, heart_size))
+    life_1 = life_1.resize((heart_size * 3, heart_size))
+
     # 쓰레기 봉투 리스트 추가
     garbagebags = []
     
@@ -189,7 +200,14 @@ def main():
         
         # 점수와 생명력 표시
         my_draw.text((10, 10), f'Score: {score.get_score()}', fill=(0, 0, 0))
-        my_draw.text((10, 30), f'Life: {score.get_life()}', fill=(0, 0, 0))
+        # 생명력을 하트 이미지로 표시
+        current_life = score.get_life()
+        if current_life == 3:
+            my_image.paste(life_3, (190, 10), life_3)
+        elif current_life == 2:
+            my_image.paste(life_2, (190, 10), life_2)
+        elif current_life == 1:
+            my_image.paste(life_1, (190, 10), life_1)
         
         # 화면 업데이트
         joystick.disp.image(my_image)

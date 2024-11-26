@@ -1,10 +1,16 @@
-# Garbagabag.py
+# Garbagebag.py
 import numpy as np
 import math
 
 class Garbagebag:
+    # 발사 가능한 방향을 클래스 상수로 정의
+    THROW_ANGLES = {
+        "up": math.pi/2,      # 90도 (수직)
+        "up_left": math.pi*2/3,    # 120도 (왼쪽 대각선)
+        "up_right": math.pi/3     # 60도 (오른쪽 대각선)
+    }
+
     def __init__(self, character_position, character_size, throw_direction): 
-        # throw_direction: "up", "up_left", "up_right" 중 하나
         center_x = (character_position[0] + character_position[2]) / 2
 
         self.position = np.array([
@@ -15,24 +21,18 @@ class Garbagebag:
         ])
 
         self.speed = 7
+        self.state = 'active'
 
-        # 방향에 따른 각도 설정 (라디안 사용해서 조절)
-        if throw_direction == "up":
-            angle = math.pi/2  # 90도 (수직)
-        elif throw_direction == "up_left":
-            angle = math.pi*2/3  # 120도 (왼쪽 대각선)
-        elif throw_direction == "up_right":
-            angle = math.pi/3  # 60도 (오른쪽 대각선)
+        # 방향에 따른 각도 설정
+        angle = self.THROW_ANGLES.get(throw_direction, self.THROW_ANGLES["up"])  # 기본값은 위쪽
+
         # 삼각함수를 사용하여 수평/수직 속도 계산
-        
         self.vertical_speed = self.speed * math.sin(angle)
         self.horizontal_speed = self.speed * math.cos(angle)
-
-        # right 방향일 경우 수평 속도는 양수, left 방향일 경우 음수
-        if throw_direction in ["left", "up_left"]:
-            self.horizontal_speed = -abs(self.horizontal_speed)    
-
-        self.state = 'active'
+        
+        # 왼쪽 대각선인 경우 수평 속도를 음수로
+        if throw_direction == "up_left":
+            self.horizontal_speed = -abs(self.horizontal_speed)
         
     def move(self):
         self.position[0] += self.horizontal_speed
