@@ -23,7 +23,7 @@ class Score:
         self.life -= 1
 
     def add_life(self):
-        if self.life < self.max_life:  # 최대 생명력을 초과하지 않도록
+        if self.life < self.max_life:
             self.life += 1
             return True
         return False

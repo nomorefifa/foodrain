@@ -19,19 +19,25 @@ def main():
     background = Image.open('image/background_city.jpg').convert('RGB')
     background = background.resize((joystick.width, joystick.height))
 
+    # 시작 화면 이미지 로드
+    start_image = Image.open('image/startbackground.png').convert('RGB')
+    start_image = start_image.resize((joystick.width, joystick.height))
+
     # 게임 종료 이미지 로드
     ending_image = Image.open('image/background_movie.jpg').convert('RGB')
     ending_image = ending_image.resize((joystick.width, joystick.height))
 
     # 시작 화면 표시
-    screen_manager.show_start_screen(background)
+    screen_manager.show_start_screen(start_image)
     
     # 게임 객체 초기화
     character = Character(joystick.width, joystick.height)
     # 원하는 증가율 크기로 변경 가능
-    character.size_increment = 0.1  # 20% 증가
+    character.size_increment = 0.2
     score = Score()
-    items = [Item(joystick.width, joystick.height) for _ in range(8)]  # 5개의 아이템 동시 생성
+    items = [Item(joystick.width, joystick.height) for _ in range(8)]
+    # item_size 가져오기
+    item_size = items[0].item_size  # 아무 아이템에서나 size를 가져올 수 있음
     
     # 이미지 로드
     # main.py의 이미지 로드 부분 수정 60x60 으로 설정
@@ -40,18 +46,18 @@ def main():
     walk_images = [Image.open(f'image/walk/walk{i+1}.png').convert('RGBA').resize((60, 60)) for i in range(8)]
     run_images = [Image.open(f'image/run/run{i+1}.png').convert('RGBA').resize((60, 60)) for i in range(8)]
 
-    # 음식 이미지 (20x20 크기로 조정)
-    food_images = [Image.open(f'image/{food}.png').convert('RGBA').resize((20, 20)) 
+    # 음식 이미지 (30x30 크기로 조정 -> item 클래스에서 한번에 조정)
+    food_images = [Image.open(f'image/{food}.png').convert('RGBA').resize((item_size, item_size)) 
                 for food in ['bread', 'chicken', 'ham', 'hamburger', 'hotdog']]
 
-    # 쓰레기 이미지 (20x20 크기로 조정)
-    trash_image = Image.open('image/food_trash.png').convert('RGBA').resize((20, 20))
+    # 쓰레기 이미지 (30x30 크기로 조정)
+    trash_image = Image.open('image/food_trash.png').convert('RGBA').resize((item_size, item_size))
 
     # 이미지 로드 부분에 쓰레기 봉투 이미지 추가
-    garbagebag_image = Image.open('image/garbagebag.png').convert('RGBA').resize((20, 20))
+    garbagebag_image = Image.open('image/garbagebag.png').convert('RGBA').resize((item_size, item_size))
 
     # 이미지 로드 부분에 알약 이미지 추가
-    pill_image = Image.open('image/pill.png').convert('RGBA').resize((20, 20))
+    pill_image = Image.open('image/pill.png').convert('RGBA').resize((item_size, item_size))
 
     # 쓰레기 봉투 리스트 추가
     garbagebags = []
@@ -76,7 +82,7 @@ def main():
         }    
     
     while not score.game_over():
-        # 배경 초기화 (흰색)
+        
         my_image.paste(background, (0, 0))
         
         # 조이스틱 입력 처리 부분 수정

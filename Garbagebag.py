@@ -16,7 +16,7 @@ class Garbagebag:
 
         self.speed = 7
 
-        # 방향에 따른 각도 설정 (라디안)
+        # 방향에 따른 각도 설정 (라디안 사용해서 조절)
         if throw_direction == "up":
             angle = math.pi/2  # 90도 (수직)
         elif throw_direction == "up_left":

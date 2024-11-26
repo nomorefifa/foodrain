@@ -8,7 +8,7 @@ class Character:
         self.height = height
         self.base_size = 60  # 기본 크기 설정
         self.current_size = self.base_size  # 현재 크기
-        self.size_increment = 0.1  # 크기 증가율을 변수로 선언 (30%)
+        self.size_increment = 0.1  # 크기 증가율 조절
         self.max_level = 5  # 커질 수 있는 최대 레벨 설정
         self.position = np.array([width/2 - 30, height - 70, width/2 + 30, height - 10])
         self.walk_state = 0
@@ -23,7 +23,6 @@ class Character:
     def resize(self, size_level):
         level = min(size_level, self.max_level)  # 최대 레벨 제한
         old_center = (self.position[0] + self.current_size/2)  # 이전 중심점 저장
-        # 기존: self.current_size = self.base_size * size_level
         # size_increment 변수 사용
         self.current_size = self.base_size * (1 + (level - 1) * self.size_increment)  
         
@@ -46,7 +45,7 @@ class Character:
             self.is_moving = True
             self.direction = "left"
             self.position[0] = max(0, self.position[0] - move_speed)
-            self.position[2] = self.position[0] + self.current_size  # current_size 사용
+            self.position[2] = self.position[0] + self.current_size
             self.animation_speed += 1
             
             if self.is_running:
@@ -58,7 +57,7 @@ class Character:
             self.is_moving = True
             self.direction = "right"
             self.position[0] = min(self.width - self.current_size, self.position[0] + move_speed)
-            self.position[2] = self.position[0] + self.current_size  # current_size 사용
+            self.position[2] = self.position[0] + self.current_size
             self.animation_speed += 1
             
             if self.is_running:
