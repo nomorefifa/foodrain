@@ -124,7 +124,7 @@ def main():
                 
             # 아이템과 충돌 체크
             for item in items:
-                if item.state == 'active' and bag.check_collision(item.position):
+                if bag.check_collision(item.position):
                     item.reset()  # 아이템 재설정
                     garbagebags.remove(bag)
                     break
@@ -138,23 +138,22 @@ def main():
         # 아이템 낙하 및 충돌 체크
         # 아이템 업데이트
         for item in items:
-            if item.state == 'active':
-                item.fall()
-                # 캐릭터와 아이템이 충돌했을때
-                if item.check_collision(character.position):
-                    if item.item_type == 5:  # 쓰레기
-                        score.lose_life()
-                    elif item.item_type == 6:  # 알약
-                        score.add_life()  # 생명력 증가
-                    else:  # 음식
-                        if score.add_score():
-                            character.resize(score.get_size_level())
-                    item.reset()
-                # 바닥 충돌 체크
-                elif item.check_bottom(joystick.height):
-                    if item.item_type == 5:  # 쓰레기일 때만 생명력 감소
-                        score.lose_life()
-                    item.reset()
+            item.fall()
+            # 캐릭터와 아이템이 충돌했을때
+            if item.check_collision(character.position):
+                if item.item_type == 5:  # 쓰레기
+                    score.lose_life()
+                elif item.item_type == 6:  # 알약
+                    score.add_life()  # 생명력 증가
+                else:  # 음식
+                    if score.add_score():
+                        character.resize(score.get_size_level())
+                item.reset()
+            # 바닥 충돌 체크
+            elif item.check_bottom(joystick.height):
+                if item.item_type == 5:  # 쓰레기일 때만 생명력 감소
+                    score.lose_life()
+                item.reset()
             # 화면 밖으로 완전히 나간 경우 재설정
             if item.position[1] > joystick.height:
                 item.reset()
@@ -176,16 +175,13 @@ def main():
             
         # 아이템 그리기(음식: 0 ~ 4 및 음식물 쓰레기: 5)
         for item in items:
-            if item.state == 'active':  # 활성화된 아이템만 그리기
-                if item.item_type == 5: # 쓰레기
-                    item_img = trash_image
-                elif item.item_type == 6:  # 알약
-                    item_img = pill_image
-                else:
-                    item_img = food_images[item.item_type] # 음식들
-                my_image.paste(item_img, 
-                             (int(item.position[0]), int(item.position[1])), 
-                             item_img)
+            if item.item_type == 5: # 쓰레기
+                item_img = trash_image
+            elif item.item_type == 6:  # 알약
+                item_img = pill_image
+            else:
+                item_img = food_images[item.item_type] # 음식들
+            my_image.paste(item_img, (int(item.position[0]), int(item.position[1])), item_img)
 
         # 이미지 그리기
         # 쓰레기 봉투 그리기
@@ -210,7 +206,7 @@ def main():
         # 화면 업데이트
         joystick.disp.image(my_image)
         
-        time.sleep(0.03)  # 게임 속도 증가
+        time.sleep(0.03)  # 게임 속도 조절
     
     # 게임 종료 화면 표시
     screen_manager.show_ending_screen(ending_image, score.get_score())

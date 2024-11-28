@@ -18,7 +18,6 @@ class Character:
         self.run_state = 0
         self.direction = "right"
         self.is_running = False
-        self.animation_speed = 0
         self.is_moving = False  # 움직임 상태 추가
 
     def resize(self, size_level):
@@ -46,7 +45,6 @@ class Character:
             self.direction = "left"
             self.position[0] = max(0, self.position[0] - move_speed)
             self.position[2] = self.position[0] + self.current_size
-            self.animation_speed += 1
             
             if self.is_running:
                 self.run_state = (self.run_state + 1) % 8
@@ -58,7 +56,6 @@ class Character:
             self.direction = "right"
             self.position[0] = min(self.width - self.current_size, self.position[0] + move_speed)
             self.position[2] = self.position[0] + self.current_size
-            self.animation_speed += 1
             
             if self.is_running:
                 self.run_state = (self.run_state + 1) % 8
@@ -67,7 +64,6 @@ class Character:
         else:
             self.walk_state = 0
             self.run_state = 0
-            self.animation_speed = 0
             
     def set_running(self, is_running):
         self.is_running = is_running
