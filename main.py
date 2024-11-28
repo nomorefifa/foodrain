@@ -71,8 +71,6 @@ def main():
 
     # 쓰레기 봉투 리스트 추가
     garbagebags = []
-    
-    game_time = 0
 
     # 이미지 크기를 저장할 딕셔너리
     character_images = {
@@ -212,8 +210,6 @@ def main():
         # 화면 업데이트
         joystick.disp.image(my_image)
         
-        game_time += 1
-        # 게임 루프의 대기 시간을 줄임 (0.03초에서 0.02초로)
         time.sleep(0.03)  # 게임 속도 증가
     
     # 게임 종료 화면 표시

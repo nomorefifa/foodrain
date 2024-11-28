@@ -28,8 +28,7 @@ class Character:
         self.current_size = self.base_size * (1 + (level - 1) * self.size_increment)  
         
         # 새로운 위치 계산 (중심점 기준으로)
-        new_left = old_center - self.current_size/2
-        new_left = max(0, min(new_left, self.width - self.current_size))  # 화면 경계 체크
+        new_left = max(0, min(old_center - self.current_size / 2, self.width - self.current_size))
         
         self.position[0] = new_left
         self.position[2] = new_left + self.current_size
