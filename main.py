@@ -58,6 +58,9 @@ def main():
     # 이미지 로드 부분에 알약 이미지 추가
     pill_image = Image.open('image/pill.png').convert('RGBA').resize((item_size, item_size))
 
+    # 이미지 로드 부분에 축소 이미지 추가
+    reduction_image = Image.open('image/reduction.png').convert('RGBA').resize((item_size, item_size))
+
     # 하트 이미지 로드
     life_3 = Image.open('image/life_3.png').convert('RGBA')
     life_2 = Image.open('image/life_2.png').convert('RGBA')
@@ -145,6 +148,9 @@ def main():
                     score.lose_life()
                 elif item.item_type == 6:  # 알약
                     score.add_life()  # 생명력 증가
+                elif item.item_type == 7:  # 축소 아이템
+                    if score.decrease_size_level():
+                        character.resize(score.get_size_level())
                 else:  # 음식
                     if score.add_score():
                         character.resize(score.get_size_level())
@@ -179,6 +185,8 @@ def main():
                 item_img = trash_image
             elif item.item_type == 6:  # 알약
                 item_img = pill_image
+            elif item.item_type == 7:  # 축소 아이템
+                item_img = reduction_image
             else:
                 item_img = food_images[item.item_type] # 음식들
             my_image.paste(item_img, (int(item.position[0]), int(item.position[1])), item_img)
@@ -192,8 +200,14 @@ def main():
         # 캐릭터 그리기
         my_image.paste(char_img, (int(character.position[0]), int(character.position[1])), char_img)
         
-        # 점수와 생명력 표시
+        # 점수 표시
         my_draw.text((10, 10), f'Score: {score.get_score()}', fill=(0, 0, 0))
+        # 색상을 다르게 해서 표시
+        if score.size_level == 5:
+            my_draw.text((10, 30), "Size: MAX Level!", fill=(255, 0, 0))  # 빨간색으로 표시
+        else:
+            remaining_food = 10 - score.size_counter
+            my_draw.text((10, 30), f'Next Level: {remaining_food} foods', fill=(0, 0, 0))
         # 생명력을 하트 이미지로 표시
         current_life = score.get_life()
         if current_life == 3:

@@ -26,7 +26,9 @@ class Item:
             self.item_type = 5  # 쓰레기
         elif rand_val < 0.33:  # 3%의 확률로 알약 생성 (0.30 ~ 0.33)
             self.item_type = 6  # 알약
-        else:  # 67%의 확률로 음식 생성
+        elif rand_val < 0.36:
+            self.item_type = 7
+        else:  # 64%의 확률로 음식 생성
             self.item_type = random.randint(0, 4)  # 음식 아이템
 
         # 각 아이템마다 약간 다른 낙하 속도 설정
