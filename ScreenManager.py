@@ -21,7 +21,7 @@ class ScreenManager:
         title_bbox = self.title_font.getbbox(title_text)
         title_width = title_bbox[2] - title_bbox[0]
         title_x = (self.width - title_width) // 2
-        # 테두리 효과와 함께 제목 그리기
+        # 테두리 효과와 함께 제목 나타냄
         draw.text((title_x-2, 20), title_text, font=self.title_font, fill=(0, 0, 0))  # 그림자
         draw.text((title_x, 20), title_text, font=self.title_font, fill=(255, 0, 0))  # 메인 텍스트
         
@@ -32,13 +32,12 @@ class ScreenManager:
         start_x = (self.width - start_width) // 2
         start_y = self.height - 20  # 하단 여백 조정
         
-        # 두꺼운 효과를 위한 테두리
+        # 두꺼운 효과를 위한 테두리 설정
         offsets = [(1,1), (-1,-1), (1,-1), (-1,1)]
         for dx, dy in offsets:
             draw.text((start_x + dx, start_y + dy), start_text, 
                      font=self.start_font, fill=(0, 0, 0))
         
-        # 텍스트 색상 설정
         # 메인 텍스트
         draw.text((start_x, start_y), start_text, font=self.start_font, fill=(255, 255, 255))
         self.joystick.disp.image(start_image)
@@ -64,7 +63,7 @@ class ScreenManager:
         game_over_width = game_over_bbox[2] - game_over_bbox[0]
         game_over_x = (self.width - game_over_width) // 2
         
-        # 두꺼운 효과를 위한 테두리 (게임오버)
+        # 텍스트에 테두리 설정
         offsets = [(1,1), (-1,-1), (1,-1), (-1,1)]
         for dx, dy in offsets:
             draw.text((game_over_x + dx, self.height//3 + dy), game_over_text, 
@@ -78,7 +77,7 @@ class ScreenManager:
         score_width = score_bbox[2] - score_bbox[0]
         score_x = (self.width - score_width) // 2
         
-        # 두꺼운 효과를 위한 테두리 (점수)
+        # 점수에도 테두리 설정
         for dx, dy in offsets:
             draw.text((score_x + dx, self.height//2 + dy), score_text, 
                      font=self.score_font, fill=(0, 0, 0))

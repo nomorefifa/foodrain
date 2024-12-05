@@ -18,7 +18,7 @@ class Character:
         self.run_state = 0
         self.direction = "right"
         self.is_running = False
-        self.is_moving = False  # 움직임 상태 추가
+        self.is_moving = False 
 
     def resize(self, size_level):
         level = min(size_level, self.max_level)  # 최대 레벨 제한

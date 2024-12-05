@@ -35,12 +35,10 @@ def main():
 
     score = Score()
     items = [Item(joystick.width, joystick.height) for _ in range(8)]
-    # item_size 가져오기
-    item_size = items[0].item_size  # 아무 아이템에서나 size를 가져올 수 있음
+    item_size = items[0].item_size
     
     # 이미지 로드
-    # main.py의 이미지 로드 부분 수정 60x60 으로 설정
-    # 키 입력하지 않았을때의 캐릭터 설정
+    # main.py의 이미지 로드 부분 수정 60x60 으로 설정    
     init_character = Image.open('image/initCharacterState.png').convert('RGBA').resize((60, 60))
     walk_images = [Image.open(f'image/walk/walk{i+1}.png').convert('RGBA').resize((60, 60)) for i in range(8)]
     run_images = [Image.open(f'image/run/run{i+1}.png').convert('RGBA').resize((60, 60)) for i in range(8)]
@@ -49,16 +47,9 @@ def main():
     food_images = [Image.open(f'image/{food}.png').convert('RGBA').resize((item_size, item_size)) 
                 for food in ['bread', 'chicken', 'ham', 'hamburger', 'hotdog']]
 
-    # 쓰레기 이미지 (30x30 크기로 조정)
     trash_image = Image.open('image/food_trash.png').convert('RGBA').resize((item_size, item_size))
-
-    # 이미지 로드 부분에 쓰레기 봉투 이미지 추가
     garbagebag_image = Image.open('image/garbagebag.png').convert('RGBA').resize((item_size, item_size))
-
-    # 이미지 로드 부분에 알약 이미지 추가
     pill_image = Image.open('image/pill.png').convert('RGBA').resize((item_size, item_size))
-
-    # 이미지 로드 부분에 축소 이미지 추가
     reduction_image = Image.open('image/reduction.png').convert('RGBA').resize((item_size, item_size))
 
     # 하트 이미지 로드
@@ -66,13 +57,12 @@ def main():
     life_2 = Image.open('image/life_2.png').convert('RGBA')
     life_1 = Image.open('image/life_1.png').convert('RGBA')
 
-    # 하트 이미지 크기 조정
     heart_size = 15
     life_3 = life_3.resize((heart_size * 3, heart_size))
     life_2 = life_2.resize((heart_size * 3, heart_size))
     life_1 = life_1.resize((heart_size * 3, heart_size))
 
-    # 쓰레기 봉투 리스트 추가
+    # 쓰레기 봉투 리스트
     garbagebags = []
 
     # 이미지 크기를 저장할 딕셔너리
@@ -94,15 +84,14 @@ def main():
     while not score.game_over():
 
         my_image.paste(background, (0, 0))
-        
-        # 조이스틱 입력 처리 부분 수정
+
         command = {
             'left_pressed': not joystick.button_L.value,
             'right_pressed': not joystick.button_R.value,
             'up_pressed': not joystick.button_U.value,
         }
 
-        # B 버튼으로 쓰레기 봉투 발사 부분 수정
+        # B 버튼으로 쓰레기 봉투 발사
         if not joystick.button_B.value:
             # 발사 방향 결정
             throw_direction = "up"  # 기본 방향은 수직으로
@@ -139,19 +128,18 @@ def main():
         character.move(command)
         
         # 아이템 낙하 및 충돌 체크
-        # 아이템 업데이트
         for item in items:
             item.fall()
             # 캐릭터와 아이템이 충돌했을때
             if item.check_collision(character.position):
-                if item.item_type == 5:  # 쓰레기
+                if item.item_type == 5:  # 쓰레기일 때
                     score.lose_life()
                 elif item.item_type == 6:  # 알약
                     score.add_life()  # 생명력 증가
                 elif item.item_type == 7:  # 축소 아이템
                     if score.decrease_size_level():
                         character.resize(score.get_size_level())
-                else:  # 음식
+                else:  # 음식일 때
                     if score.add_score():
                         character.resize(score.get_size_level())
                 item.reset()
@@ -164,7 +152,7 @@ def main():
             if item.position[1] > joystick.height:
                 item.reset()
         
-        # 캐릭터 그리기 부분 수정
+        # 캐릭터 나타냄
         current_level = score.get_size_level()
         if not character.is_moving:  # 움직이지 않을 때
             char_img = character_images[current_level]['init']
@@ -178,8 +166,7 @@ def main():
                 
             if character.direction == "left":
                 char_img = char_img.transpose(Image.FLIP_LEFT_RIGHT)
-            
-        # 아이템 그리기(음식: 0 ~ 4 및 음식물 쓰레기: 5)
+        # 아이템 나타냄
         for item in items:
             if item.item_type == 5: # 쓰레기
                 item_img = trash_image
@@ -191,8 +178,7 @@ def main():
                 item_img = food_images[item.item_type] # 음식들
             my_image.paste(item_img, (int(item.position[0]), int(item.position[1])), item_img)
 
-        # 이미지 그리기
-        # 쓰레기 봉투 그리기
+        # 쓰레기 봉투 나타냄
         for bag in garbagebags:
             my_image.paste(garbagebag_image, 
                          (int(bag.position[0]), int(bag.position[1])), garbagebag_image)
@@ -202,13 +188,12 @@ def main():
         
         # 점수 표시
         my_draw.text((10, 10), f'Score: {score.get_score()}', fill=(0, 0, 0))
-        # 색상을 다르게 해서 표시
         if score.size_level == 5:
             my_draw.text((10, 30), "Size: MAX Level!", fill=(255, 0, 0))  # 빨간색으로 표시
         else:
             remaining_food = 10 - score.size_counter
             my_draw.text((10, 30), f'Next Level: {remaining_food} foods', fill=(0, 0, 0))
-        # 생명력을 하트 이미지로 표시
+        # 생명력 나타냄
         current_life = score.get_life()
         if current_life == 3:
             my_image.paste(life_3, (190, 10), life_3)
@@ -220,9 +205,9 @@ def main():
         # 화면 업데이트
         joystick.disp.image(my_image)
         
-        time.sleep(0.03)  # 게임 속도 조절
+        time.sleep(0.03)
     
-    # 게임 종료 화면 표시
+    # 게임 종료 화면
     screen_manager.show_ending_screen(ending_image, score.get_score())
     time.sleep(3)
 

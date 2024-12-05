@@ -5,7 +5,7 @@ class Score:
         self.life = 3  # 기본 생명력
         self.max_life = 3  # 최대 생명력
         self.size_level = 1
-        self.size_counter = 0  # 크기 증가를 위한 카운터 추가
+        self.size_counter = 0 # 감소 후 크기 증가를 위한 카운터
         
     def get_size_level(self):
         return self.size_level
@@ -14,6 +14,12 @@ class Score:
         if self.size_level > 1:
             self.size_level -= 1  # 크기 레벨만 감소
             self.size_counter = 0  # 축소 시 카운터 리셋
+            return True
+        return False
+    
+    def increase_size_level(self):
+        if self.size_level < 5:  # 최대 레벨 제한
+            self.size_level += 1
             return True
         return False
         
@@ -29,12 +35,6 @@ class Score:
                 self.size_counter = 9  # 최대 레벨이면 9개 유지
                 
         return old_level != self.get_size_level()  # 레벨 변화 여부 반환
-        
-    def increase_size_level(self):
-        if self.size_level < 5:  # 최대 레벨 제한
-            self.size_level += 1
-            return True
-        return False
     
     def lose_life(self):
         self.life -= 1
